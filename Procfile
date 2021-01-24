@@ -1,1 +1,1 @@
-worker: python skippredict-app.py
+web: python skippredict-app.py
