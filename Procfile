@@ -1,1 +1,1 @@
-web: python skippredict-app.py -p $PORT
+web: sh setup.sh && streamlit run skippredict-app.py
