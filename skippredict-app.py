@@ -43,8 +43,8 @@ def user_input_features():
 input_df = user_input_features()
 
 
-main = pd.read_csv('technocolabs training set.csv',low_memory=False)
-feat = pd.read_csv('tf_000000000000.csv',low_memory=False)
+main = pd.read_csv('technocolabs training set.csv',low_memory=False,header=0,delim_whitespace=True)
+feat = pd.read_csv('tf_000000000000.csv',low_memory=False,header=0,delim_whitespace=True)
 main.rename(columns = {'track_id_clean':'track_id'},inplace=True)
 dataf = pd.merge(main,feat)
 df = dataf[['session_position','session_length','no_pause_before_play','short_pause_before_play','long_pause_before_play','hist_user_behavior_n_seekfwd','hist_user_behavior_n_seekback','hour_of_day','context_type','hist_user_behavior_reason_start']]
