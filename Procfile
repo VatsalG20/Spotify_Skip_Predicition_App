@@ -1,1 +1,1 @@
-web: streamlit skippredict-app.py
+web: streamlit run skippredict-app.py
