@@ -1,1 +1,1 @@
-worker: sh setup.sh && streamlit run skippredict-app.py
+web: sh setup.sh && streamlit run skippredict-app.py
