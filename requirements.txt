@@ -3,3 +3,4 @@ pandas==1.0.5
 numpy==1.18.5
 seaborn==0.10.1
 scikit_learn==0.24.1
+gunicorn
