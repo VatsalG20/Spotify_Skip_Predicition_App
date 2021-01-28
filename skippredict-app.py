@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
 
 st.write("""
 # Spotify Skip Prediction App
@@ -14,7 +15,7 @@ This app predict whether the song will be skipped or not
 
 st.header('User input features')
 
-load_clf = pickle.load(open('dummy_predictionxgbc.pkl','rb'))
+load_clf = pickle.load(open('skip_predictionxgbc.pkl','rb'))
 
 def classify(num):
     if num == 1:
@@ -111,6 +112,8 @@ def user_input_features():
     'acoustic_vector_5': acoustic_vector_5,
     'acoustic_vector_6': acoustic_vector_6,
     'acoustic_vector_7': acoustic_vector_7}
+    features = pd.DataFrame(data, index=[0])
+    return features
 input_df = user_input_features()
 
 
@@ -122,15 +125,14 @@ dataf.drop(['session_id','track_id','date','skip_1','skip_2','skip_3'],axis=1,in
 df = dataf.drop(['not_skipped'],axis=1)
 df = pd.concat([input_df,df],axis=0)
 
-encode = ['premium','context_type','hist_user_behavior_reason_start','hist_user_behavior_reason_end','hist_user_behavior_is_shuffle','mode']
-for col in encode:
-    dummy = pd.get_dummies(df[col], prefix=col)
-    df = pd.concat([df,dummy], axis=1)
-    del df[col]
+objList = df.select_dtypes(include = "object").columns
+
+for feat in objList:
+    df[feat] = le.fit_transform(df[feat].astype(str))
+
 df = df[:1]
 
 if st.button('Classify'):
-         st.success(classify(load_clf.predict(df)))
          st.subheader('User Input features')
          st.write(df)
          prediction = load_clf.predict(df)
