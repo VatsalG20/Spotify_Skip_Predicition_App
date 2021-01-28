@@ -16,10 +16,17 @@ st.header('User input features')
 
 load_clf = pickle.load(open('dummy_predictionxgbc.pkl','rb'))
 
+def classify(num):
+    if num == 1:
+        return 'Skipped'
+    else:
+        return 'Not-Skipped'
+
+
 def user_input_features():
     session_position = st.slider('Session position',1,20)
     session_length = st.slider('Session position',10,20)
-    context_switch = st.slider('Context switch', 0, 1)
+    context_switch = st.selectbox('Context switch', (0, 1))
     no_pause_before_play = st.slider('No pause before play', 0,1)
     short_pause_before_play = st.slider('short pause before play', 0,1)
     long_pause_before_play = st.slider('Long pause before play', 0,1)
@@ -104,9 +111,6 @@ def user_input_features():
     'acoustic_vector_5': acoustic_vector_5,
     'acoustic_vector_6': acoustic_vector_6,
     'acoustic_vector_7': acoustic_vector_7}
-    features = pd.DataFrame(data, index=[0])
-    return features
-
 input_df = user_input_features()
 
 
@@ -114,10 +118,11 @@ main = pd.read_csv('technocolabs training set.csv',low_memory=False)
 feat = pd.read_csv('tf_000000000000.csv',low_memory=False)
 main.rename(columns = {'track_id_clean':'track_id'},inplace=True)
 dataf = pd.merge(main,feat)
-skip = main.drop(['not_skipped'],axis=1)
-df = pd.concat([input_df,skip],axis=0)
+dataf.drop(['session_id','track_id','date','skip_1','skip_2','skip_3'],axis=1,inplace=True)
+df = dataf.drop(['not_skipped'],axis=1)
+df = pd.concat([input_df,df],axis=0)
 
-encode = ['hist_user_behavior_is_shuffle','premium','context_type','hist_user_behavior_reason_start','hist_user_behavior_reason_end','mode']
+encode = ['premium','context_type','hist_user_behavior_reason_start','hist_user_behavior_reason_end','hist_user_behavior_is_shuffle','mode']
 for col in encode:
     dummy = pd.get_dummies(df[col], prefix=col)
     df = pd.concat([df,dummy], axis=1)
@@ -125,7 +130,7 @@ for col in encode:
 df = df[:1]
 
 if st.button('Classify'):
-         st.success(classify(load_clf.predict(inputs)))
+         st.success(classify(load_clf.predict(df)))
          st.subheader('User Input features')
          st.write(df)
          prediction = load_clf.predict(df)
