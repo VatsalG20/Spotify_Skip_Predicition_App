@@ -118,6 +118,7 @@ main = pd.read_csv('technocolabs training set.csv',low_memory=False)
 feat = pd.read_csv('tf_000000000000.csv',low_memory=False)
 main.rename(columns = {'track_id_clean':'track_id'},inplace=True)
 dataf = pd.merge(main,feat)
+dataf.drop(['session_id','track_id','date','skip_1','skip_2','skip_3'],axis=1,inplace=True)
 df = dataf.drop(['not_skipped'],axis=1)
 df = pd.concat([input_df,df],axis=0)
 
