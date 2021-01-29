@@ -15,15 +15,9 @@ This app predict whether the song will be skipped or not
 
 st.header('User input features')
 
-load_clf = pickle.load(open('skip_predictionxgbc.pkl','rb'))
 
-def classify(num):
-    if num == 1:
-        return 'Skipped'
-    else:
-        return 'Not-Skipped'
-
-
+st.sidebar.header('Predict Model Selection')
+prediction_model = st.sidebar.selectbox('Select Model',('Random Forest','Support Vector Machine','XGBoost'))
 def user_input_features():
     session_position = st.slider('Session position',1,20)
     session_length = st.slider('Session position',10,20)
@@ -117,6 +111,7 @@ def user_input_features():
 input_df = user_input_features()
 
 
+
 objList = input_df.select_dtypes(include = "object").columns
 
 for feat in objList:
@@ -124,10 +119,28 @@ for feat in objList:
 
 df = input_df[:1]
 
-if st.button('Classify'):
-         st.subheader('User Input features')
-         st.write(df)
-         prediction = load_clf.predict(df)
-         st.subheader('Prediction')
-         skip = np.array(['Not Skipped','Skipped'])
-         st.write(skip[prediction])
+if st.button('Predict'):
+    if prediction_model == 'Random Forest':
+        load_clf = pickle.load(open('skip_predictionrfc.pkl','rb'))
+        st.subheader('User Input features')
+        st.write(df)
+        prediction = load_clf.predict(df)
+        st.subheader('Prediction Using Random Random Forest Classifier')
+        skip = np.array(['Skipped','Not Skipped'])
+        st.write(skip[prediction])
+    elif prediction_model == 'Support Vector Machine':
+        load_clf = pickle.load(open('skip_predictionsvc.pkl','rb'))
+        st.subheader('User Input features')
+        st.write(df)
+        prediction = load_clf.predict(df)
+        st.subheader('Prediction Using Support Vector Machine')
+        skip = np.array(['Skipped','Not Skipped'])
+        st.write(skip[prediction])
+    else:
+        load_clf = pickle.load(open('skip_predictionxgbc.pkl','rb'))
+        st.subheader('User Input features')
+        st.write(df)
+        prediction = load_clf.predict(df)
+        st.subheader('Prediction Using XGBoost Classifier')
+        skip = np.array(['Skipped','Not Skipped'])
+        st.write(skip[prediction])
